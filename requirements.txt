@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+numpy
+websockets
+pydantic
+piper-tts
+whisperx
