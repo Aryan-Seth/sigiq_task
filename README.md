@@ -252,7 +252,7 @@ set -euo pipefail
 nvidia-smi
 
 # 1) Clone this repo to /content/sigiq_takehome (or upload it there) before running.
-if [[ ! -d /content/sigiq_takehome/tts_ws ]]; then
+if [[ ! -d /content/sigiq_takehome ]]; then
   echo "Place this repo at /content/sigiq_takehome first." >&2
   exit 1
 fi
@@ -268,13 +268,13 @@ fi
 # 3) Install dependencies.
 python -m pip install -U pip
 python -m pip install -r /content/CosyVoice/requirements.txt
-python -m pip install -r /content/sigiq_takehome/tts_ws/requirements.runtime.txt
+python -m pip install -r /content/sigiq_takehome/requirements.runtime.txt
 ```
 
 Or use the helper script:
 
 ```bash
-cd /content/sigiq_takehome/tts_ws
+cd /content/sigiq_takehome
 bash colab_t4_cosyvoice.sh install
 ```
 
@@ -283,7 +283,7 @@ Start the websocket server:
 ```bash
 %%bash
 set -euo pipefail
-cd /content/sigiq_takehome/tts_ws
+cd /content/sigiq_takehome
 export TTS_BACKEND=cosyvoice
 export COSYVOICE_REPO_DIR=/content/CosyVoice
 export COSYVOICE_MODEL_DIR=FunAudioLLM/CosyVoice2-0.5B
@@ -297,7 +297,7 @@ tail -n 30 /content/tts_ws_server.log || true
 Or:
 
 ```bash
-cd /content/sigiq_takehome/tts_ws
+cd /content/sigiq_takehome
 bash colab_t4_cosyvoice.sh start
 ```
 

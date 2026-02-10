@@ -2,7 +2,7 @@
 set -euo pipefail
 
 WORK_ROOT="${WORK_ROOT:-/content}"
-REPO_ROOT="${REPO_ROOT:-$WORK_ROOT/sigiq_takehome/tts_ws}"
+REPO_ROOT="${REPO_ROOT:-$WORK_ROOT/sigiq_takehome}"
 COSYVOICE_REPO_DIR="${COSYVOICE_REPO_DIR:-$WORK_ROOT/CosyVoice}"
 PORT="${PORT:-8000}"
 HOST="${HOST:-0.0.0.0}"
@@ -14,11 +14,23 @@ Usage: bash colab_t4_cosyvoice.sh <install|start|smoke>
 
 Environment overrides:
   WORK_ROOT=/content
-  REPO_ROOT=/content/sigiq_takehome/tts_ws
+  REPO_ROOT=/content/sigiq_takehome
   COSYVOICE_REPO_DIR=/content/CosyVoice
   PORT=8000
   HOST=0.0.0.0
 EOF
+}
+
+prepare_requirements_for_py312() {
+  local req_in="$1"
+  local req_out="$2"
+  # grpcio==1.57.0 has no stable py3.12 wheel path; deepspeed is not required for inference.
+  awk '
+    /^grpcio==/ { print "grpcio>=1.62.2"; next }
+    /^grpcio-tools==/ { print "grpcio-tools>=1.62.2"; next }
+    /^deepspeed==/ { next }
+    { print }
+  ' "$req_in" > "$req_out"
 }
 
 install() {
@@ -38,9 +50,31 @@ install() {
     )
   fi
 
-  python -m pip install -U pip
-  python -m pip install -r "$COSYVOICE_REPO_DIR/requirements.txt"
+  python -m pip install -U pip setuptools wheel
+
+  local py_minor
+  py_minor="$(python - <<'PY'
+import sys
+print(sys.version_info.minor)
+PY
+)"
+
+  local req_path="$COSYVOICE_REPO_DIR/requirements.txt"
+  local req_to_install="$req_path"
+  local tmp_req=""
+  if [[ "$py_minor" -ge 12 ]]; then
+    tmp_req="$(mktemp -t cosyvoice_req.XXXXXX.txt)"
+    prepare_requirements_for_py312 "$req_path" "$tmp_req"
+    req_to_install="$tmp_req"
+    echo "Using patched CosyVoice requirements for Python 3.$py_minor"
+  fi
+
+  python -m pip install --prefer-binary -r "$req_to_install"
   python -m pip install -r "$REPO_ROOT/requirements.runtime.txt"
+
+  if [[ -n "$tmp_req" && -f "$tmp_req" ]]; then
+    rm -f "$tmp_req"
+  fi
 }
 
 start() {
