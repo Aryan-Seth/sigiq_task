@@ -8,6 +8,7 @@ from typing import Any, Iterable, Iterator
 import numpy as np
 
 from .base import SynthResult, SynthStreamChunk
+from .whisper_compat import ensure_whisper_module
 
 
 def _env_flag(name: str, default: bool = False) -> bool:
@@ -46,6 +47,10 @@ class CosyVoiceBackend:
     """CosyVoice backend (local model or remote model-id via ModelScope/HF)."""
 
     def __init__(self) -> None:
+        # CosyVoice frontend imports `whisper.log_mel_spectrogram`.
+        # On modern Python runtimes, openai-whisper build can fail;
+        # provide a local compatible fallback before importing CosyVoice.
+        ensure_whisper_module()
         self._inject_cosyvoice_repo_to_path()
         try:
             from cosyvoice.cli.cosyvoice import AutoModel  # type: ignore

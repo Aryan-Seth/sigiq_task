@@ -24,11 +24,43 @@ EOF
 prepare_requirements_for_py312() {
   local req_in="$1"
   local req_out="$2"
-  # grpcio==1.57.0 has no stable py3.12 wheel path; deepspeed is not required for inference.
+  # grpcio==1.57.0 has no stable py3.12 wheel path.
+  # Deepspeed/openai-whisper/pyworld/tensorrt are not required for this websocket inference path.
   awk '
+    /^--extra-index-url/ { print; next }
     /^grpcio==/ { print "grpcio>=1.62.2"; next }
     /^grpcio-tools==/ { print "grpcio-tools>=1.62.2"; next }
     /^deepspeed==/ { next }
+    /^openai-whisper==/ { next }
+    /^pyworld==/ { next }
+    /^tensorrt-cu12==/ { next }
+    /^tensorrt-cu12-bindings==/ { next }
+    /^tensorrt-cu12-libs==/ { next }
+    { print }
+  ' "$req_in" > "$req_out"
+}
+
+prepare_requirements_minimal_fallback() {
+  local req_in="$1"
+  local req_out="$2"
+  awk '
+    /^--extra-index-url/ { print; next }
+    /^deepspeed==/ { next }
+    /^openai-whisper==/ { next }
+    /^pyworld==/ { next }
+    /^grpcio==/ { next }
+    /^grpcio-tools==/ { next }
+    /^fastapi==/ { next }
+    /^fastapi-cli==/ { next }
+    /^gradio==/ { next }
+    /^gdown==/ { next }
+    /^lightning==/ { next }
+    /^tensorboard==/ { next }
+    /^matplotlib==/ { next }
+    /^pyarrow==/ { next }
+    /^tensorrt-cu12==/ { next }
+    /^tensorrt-cu12-bindings==/ { next }
+    /^tensorrt-cu12-libs==/ { next }
     { print }
   ' "$req_in" > "$req_out"
 }
@@ -69,7 +101,14 @@ PY
     echo "Using patched CosyVoice requirements for Python 3.$py_minor"
   fi
 
-  python -m pip install --prefer-binary -r "$req_to_install"
+  if ! python -m pip install --prefer-binary -r "$req_to_install"; then
+    echo "Primary CosyVoice dependency install failed; retrying minimal fallback set..." >&2
+    local tmp_req_fallback
+    tmp_req_fallback="$(mktemp -t cosyvoice_req_fallback.XXXXXX.txt)"
+    prepare_requirements_minimal_fallback "$req_to_install" "$tmp_req_fallback"
+    python -m pip install --prefer-binary -r "$tmp_req_fallback"
+    rm -f "$tmp_req_fallback"
+  fi
   python -m pip install -r "$REPO_ROOT/requirements.runtime.txt"
 
   if [[ -n "$tmp_req" && -f "$tmp_req" ]]; then
