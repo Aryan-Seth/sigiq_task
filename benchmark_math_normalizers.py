@@ -272,7 +272,9 @@ async def run() -> None:
     )
     parser.add_argument("--piper-voice")
     parser.add_argument("--piper-config")
-    parser.add_argument("--json-out", default="/tmp/benchmark_math_normalizers.json")
+    parser.add_argument(
+        "--json-out", default="artifacts/benchmarks/benchmark_math_normalizers.json"
+    )
     args = parser.parse_args()
     server_python = resolve_server_python(args.server_python)
 
@@ -322,6 +324,7 @@ async def run() -> None:
 
     if args.json_out:
         out = Path(args.json_out)
+        out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(json.dumps(all_rows, indent=2), encoding="utf-8")
         print(f"\nWrote {out}")
 

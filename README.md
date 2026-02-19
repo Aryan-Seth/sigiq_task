@@ -22,6 +22,19 @@ pip install -r requirements.txt
 npm install
 ```
 
+## Project Layout
+
+- `app/`: FastAPI server, backends, aligner, and math normalizer runtime code
+- `app/static/`: local test UI
+- `app/tools/`: Node helper worker (`sre_worker.mjs`) for LaTeX-to-speech
+- `benchmark_*.py`: benchmark sweeps (TTFT, model Pareto, math normalizer)
+- `align_eval.py`: alignment quality evaluation
+- `experiments/`: saved reports, plots, and benchmark outputs
+- `artifacts/`: local generated runtime outputs
+  - `artifacts/audio/`: generated WAV files
+  - `artifacts/benchmarks/`: benchmark JSON outputs
+  - `artifacts/eval/`: eval-time local outputs
+
 ## 3) Piper Medium Files
 
 `run_local.py` auto-downloads these on first run if missing:
@@ -52,6 +65,10 @@ In a new terminal (same env):
 source .venv/bin/activate
 python test_client.py --text "The product of three and seven is \(3 \times 7 = 21\)."
 ```
+
+By default, test audio is written to:
+
+- `artifacts/audio/output.wav`
 
 Open UI:
 

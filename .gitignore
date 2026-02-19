@@ -3,10 +3,23 @@ __pycache__/
 *.pyo
 .venv/
 node_modules/
-output.wav
 server.log
 *.onnx
 *.onnx.json
-*.wav
 .DS_Store
 models/
+
+# Runtime artifacts
+output.wav
+artifacts/*
+!artifacts/.gitkeep
+!artifacts/audio/
+!artifacts/audio/.gitkeep
+!artifacts/benchmarks/
+!artifacts/benchmarks/.gitkeep
+!artifacts/eval/
+!artifacts/eval/.gitkeep
+
+# Local runtime logs / temp
+*.log
+.tmp*/

@@ -8,6 +8,7 @@ import math
 import sys
 import re
 import difflib
+from pathlib import Path
 from typing import Dict, List, Tuple, Optional
 
 import numpy as np
@@ -233,7 +234,7 @@ async def main() -> None:
     parser.add_argument("--uri", default="ws://localhost:8000/tts")
     parser.add_argument("--chunk-size", type=int, default=512)
     parser.add_argument("--delay", type=float, default=0.0)
-    parser.add_argument("--save-wav", default="output.wav")
+    parser.add_argument("--save-wav", default="artifacts/audio/align_eval.wav")
     args = parser.parse_args()
 
     if args.file:
@@ -256,6 +257,9 @@ async def main() -> None:
     )
     print(f"Collected audio samples: {audio.shape[0]} at {sr} Hz")
     if args.save_wav:
+        out_parent = Path(args.save_wav).parent
+        if str(out_parent):
+            out_parent.mkdir(parents=True, exist_ok=True)
         save_wav(args.save_wav, audio, sr)
         print(f"Wrote {args.save_wav}")
 

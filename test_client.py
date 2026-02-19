@@ -5,6 +5,7 @@ import asyncio
 import base64
 import json
 import math
+from pathlib import Path
 import sys
 import time
 import wave
@@ -43,6 +44,7 @@ async def _run_once(
     chunk_size: int,
     delay: float,
     write_wav: bool,
+    output_wav: str,
 ) -> dict[str, float | str]:
     uri = "ws://localhost:8000/tts"
     pcm_chunks = []
@@ -92,12 +94,16 @@ async def _run_once(
     if write_wav:
         pcm_data = b"".join(pcm_chunks)
         if pcm_data:
-            with wave.open("output.wav", "wb") as wf:
+            out_path = output_wav
+            out_parent = Path(out_path).parent
+            if str(out_parent):
+                out_parent.mkdir(parents=True, exist_ok=True)
+            with wave.open(out_path, "wb") as wf:
                 wf.setnchannels(1)
                 wf.setsampwidth(2)
                 wf.setframerate(44100)
                 wf.writeframes(pcm_data)
-            print("Wrote output.wav")
+            print(f"Wrote {out_path}")
         else:
             print("No audio received")
 
@@ -118,6 +124,7 @@ async def run() -> None:
     parser.add_argument("--runs", type=int, default=1)
     parser.add_argument("--progress-every", type=int, default=0)
     parser.add_argument("--write-wav", action="store_true")
+    parser.add_argument("--output-wav", default="artifacts/audio/output.wav")
     args = parser.parse_args()
 
     text = _load_text(args)
@@ -134,7 +141,9 @@ async def run() -> None:
     for idx in range(runs):
         if runs > 1:
             print(f"Run {idx + 1}/{runs}")
-        result = await _run_once(text, chunk_size, delay, write_wav and idx == runs - 1)
+        result = await _run_once(
+            text, chunk_size, delay, write_wav and idx == runs - 1, args.output_wav
+        )
         results.append(result)
         if args.progress_every and (idx + 1) % args.progress_every == 0:
             ttfts = [r["ttft_s"] for r in results if not math.isnan(r["ttft_s"])]

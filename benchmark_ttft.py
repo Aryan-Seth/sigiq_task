@@ -888,6 +888,7 @@ async def run() -> None:
         out_path = Path(args.json_out)
         if not out_path.is_absolute():
             out_path = Path(__file__).parent / out_path
+        out_path.parent.mkdir(parents=True, exist_ok=True)
         out_path.write_text(json.dumps(results, indent=2), encoding="utf-8")
         print(f"\nWrote raw benchmark data to {out_path}")
 
