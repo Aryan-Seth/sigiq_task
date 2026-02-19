@@ -128,3 +128,28 @@ export TTS_PROFILE=1
   - Confirm `npm install` was run and `node` is on PATH
 - Very high TTFT
   - WhisperX alignment is expensive; this setup prioritizes alignment quality over minimum latency.
+
+## Optimal Frontier Levers
+
+These were the highest-impact levers in our sweeps:
+
+- `TTS_BACKEND`
+  - Biggest effect on TTFT/throughput.
+  - `piper` was fastest on local hardware.
+  - `kokoro` can improve voice quality but usually increases TTFT.
+- `ALIGNER`
+  - `none` for minimum latency.
+  - `whisperx` for best alignment quality/coverage.
+  - Adds measurable post-model cost.
+- `TTS_MATH_NORMALIZER`
+  - `rule` is fastest.
+  - `sre` improves spoken LaTeX/math fidelity with modest overhead.
+- Chunking/scheduling controls
+  - chunk ramping and `TTS_MIN_CHARS_TO_SYNTH`, `TTS_IDLE_TRIGGER_MS`, `TTS_FIRST_SEGMENT_LIMIT`
+  - govern TTFT vs smooth throughput tradeoff.
+
+Working frontier modes:
+
+- Latency frontier: `piper + rule + none`
+- Balanced quality/alignment: `piper + sre + whisperx` (current default)
+- Higher voice-quality candidate (slower): `kokoro + sre + whisperx`
