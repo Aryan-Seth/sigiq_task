@@ -35,9 +35,8 @@ async def collect_stream(
     uri: str, text: str, chunk_size: int, delay: float
 ) -> Tuple[np.ndarray, int, Dict[str, List]]:
     pcm_chunks: List[bytes] = []
-    align_chars: List[str] = []
-    align_start_ms: List[float] = []
-    align_dur_ms: List[float] = []
+    align_events: List[Tuple[str, float, float]] = []
+    align_by_idx: Dict[int, Tuple[str, float, float]] = {}
 
     samples_so_far = 0
     sr = 44100
@@ -74,18 +73,54 @@ async def collect_stream(
                 chars = aln.get("chars", [])
                 starts = aln.get("char_start_times_ms", [])
                 durs = aln.get("char_durations_ms", [])
-                for ch, s, d in zip(chars, starts, durs):
-                    if len(align_chars) >= len(text):
-                        break
-                    # enforce sequence consistency with source text to avoid duplicates from overlapping windows
-                    expected = text[len(align_chars)]
-                    if ch != expected:
-                        continue
-                    align_chars.append(ch)
-                    align_start_ms.append(chunk_start_ms + float(s))
-                    align_dur_ms.append(float(d))
+                idxs = aln.get("char_indices", [])
+                for i, (ch, s, d) in enumerate(zip(chars, starts, durs)):
+                    abs_start_ms = chunk_start_ms + float(s)
+                    dur_ms = float(d)
+                    idx = None
+                    if i < len(idxs):
+                        try:
+                            idx = int(idxs[i])
+                        except Exception:
+                            idx = None
+                    if idx is not None:
+                        end_ms = abs_start_ms + dur_ms
+                        if idx in align_by_idx:
+                            prev_ch, prev_start, prev_end = align_by_idx[idx]
+                            align_by_idx[idx] = (
+                                prev_ch,
+                                min(prev_start, abs_start_ms),
+                                max(prev_end, end_ms),
+                            )
+                        else:
+                            align_by_idx[idx] = (str(ch), abs_start_ms, end_ms)
+                    else:
+                        align_events.append((str(ch), abs_start_ms, dur_ms))
         except websockets.ConnectionClosed:
             pass
+
+    align_chars: List[str] = []
+    align_start_ms: List[float] = []
+    align_dur_ms: List[float] = []
+    merged_events: List[Tuple[str, float, float]] = []
+    for idx in sorted(align_by_idx):
+        ch, start_ms, end_ms = align_by_idx[idx]
+        merged_events.append((ch, start_ms, max(0.0, end_ms - start_ms)))
+
+    align_events.sort(key=lambda x: (x[1], x[2], x[0]))
+    seen = set()
+    for ch, start_ms, dur_ms in align_events:
+        key = (ch, int(round(start_ms * 2.0)), int(round(dur_ms * 2.0)))
+        if key in seen:
+            continue
+        seen.add(key)
+        merged_events.append((ch, start_ms, dur_ms))
+
+    merged_events.sort(key=lambda x: (x[1], x[2], x[0]))
+    for ch, start_ms, dur_ms in merged_events:
+        align_chars.append(ch)
+        align_start_ms.append(start_ms)
+        align_dur_ms.append(dur_ms)
 
     if pcm_chunks:
         pcm_bytes = b"".join(pcm_chunks)
@@ -136,6 +171,8 @@ def compare_alignments(
             for j in range(size):
                 si = a0 + j
                 ti = b0 + j
+                if si >= len(starts) or si >= len(durs):
+                    continue
                 widx = c2w[ti] if 0 <= ti < len(c2w) else None
                 if widx is None:
                     continue

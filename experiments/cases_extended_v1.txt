@@ -1,0 +1,26 @@
+# Format: <name><tab><text>
+plain_01	Streaming speech systems should prioritize low first-audio latency and stable pronunciation over long passages.
+plain_02	A production websocket path must handle concurrent send and receive without blocking either direction.
+plain_03	When packet timing is irregular, buffering policy should avoid both underruns and long startup delays.
+plain_04	Users notice jitter quickly, so pacing and chunk aggregation need predictable behavior under load.
+plain_05	Robust systems recover cleanly from reconnects and continue generating audio without duplicated words.
+math_01	The product of three and seven is \(3 \times 7 = 21\).
+math_02	For a right triangle, the Pythagorean theorem states \(a^2 + b^2 = c^2\).
+math_03	The derivative of \(e^x\) with respect to \(x\) is \(\frac{d}{dx} e^x = e^x\).
+math_04	The quadratic formula is \(x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}\).
+math_05	The binomial expansion begins with \((a+b)^2 = a^2 + 2ab + b^2\).
+math_06	The integral of sine is \(\int \sin(x)\,dx = -\cos(x) + C\).
+math_07	The limit as \(x\) approaches zero of \(\frac{\sin x}{x}\) equals one.
+units_01	The vehicle accelerated at 9.8 m/s^2 and reached 120 km/h in 12 s.
+units_02	The battery delivered 48 V at 2.5 A for 30 min, consuming about 0.06 kWh.
+units_03	The sample weighed 3.2 mg and occupied 1.5 cm^3 at 23 C.
+money_01	The invoice total was $1,249.95, with a 7.25% tax and a $50.00 discount.
+money_02	Revenue increased from $2.1M to $2.8M quarter over quarter.
+dates_01	The release candidate shipped on 2026-02-10 at 14:30 UTC.
+dates_02	Please schedule the maintenance window for Friday, March 13, 2026, at 9:00 AM.
+abbr_01	Dr. Smith met with the U.S. team at NASA HQ in Washington, D.C.
+abbr_02	Our SLA target is 99.95% uptime with p95 latency below 120 ms.
+mixed_01	Probability of success is 95% when the sample size is n equals 200.
+mixed_02	Compute F equals m a, then report the force in newtons and pounds-force.
+mixed_03	If x is greater than 0.5, return alpha; otherwise return beta.
+mixed_04	Latency decomposition includes model compute, alignment, normalization, and websocket packaging overhead.

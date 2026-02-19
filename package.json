@@ -1,0 +1,24 @@
+{
+  "name": "tts_ws",
+  "version": "1.0.0",
+  "description": "Minimal ElevenLabs-style TTS WebSocket clone scaffold with streaming audio + alignment.",
+  "main": "app/tools/sre_worker.mjs",
+  "scripts": {
+    "sre-worker": "node app/tools/sre_worker.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aryan-Seth/sigiq_task.git"
+  },
+  "keywords": ["tts", "math", "latex", "websocket"],
+  "author": "",
+  "license": "MIT",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Aryan-Seth/sigiq_task/issues"
+  },
+  "homepage": "https://github.com/Aryan-Seth/sigiq_task#readme",
+  "dependencies": {
+    "latex-to-speech": "^0.0.4"
+  }
+}

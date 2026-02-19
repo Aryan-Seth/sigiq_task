@@ -1,0 +1,153 @@
+{
+  "config": {
+    "math_normalizer": "rule",
+    "chunk_mode": "ramp",
+    "chunk_size": 22,
+    "chunk_plan": [
+      4,
+      8,
+      32
+    ],
+    "delay": 0.01,
+    "runs": 1,
+    "voices": [
+      "en_US-lessac-low.onnx",
+      "en_US-lessac-medium.onnx",
+      "en_US-lessac-high.onnx"
+    ],
+    "cases": [
+      "plain",
+      "math",
+      "math2"
+    ]
+  },
+  "summary": [
+    {
+      "voice": "en_US-lessac-low.onnx",
+      "ttft_p50_ms": 78.56149994768202,
+      "wer_mean": 1.0472727272727271,
+      "cer_mean": 0.8928928928928929
+    },
+    {
+      "voice": "en_US-lessac-medium.onnx",
+      "ttft_p50_ms": 66.82762503623962,
+      "wer_mean": 1.0020677361853834,
+      "cer_mean": 0.7160984513925691
+    },
+    {
+      "voice": "en_US-lessac-high.onnx",
+      "ttft_p50_ms": 365.2499170275405,
+      "wer_mean": 1.4941889483065953,
+      "cer_mean": 0.8203665850724674
+    }
+  ],
+  "pareto_frontier": [
+    {
+      "voice": "en_US-lessac-medium.onnx",
+      "ttft_p50_ms": 66.82762503623962,
+      "wer_mean": 1.0020677361853834,
+      "cer_mean": 0.7160984513925691
+    }
+  ],
+  "rows": [
+    {
+      "voice": "en_US-lessac-low.onnx",
+      "case": "plain",
+      "run": 1,
+      "ttft_ms": 66.61687500309199,
+      "server_ttft_audio_out_ms": 51.36,
+      "wer": 1.0,
+      "cer": 1.0,
+      "hyp": "",
+      "ref": "A practical streaming text to speech benchmark should keep first audio latency low while preserving clear pronunciation."
+    },
+    {
+      "voice": "en_US-lessac-low.onnx",
+      "case": "math",
+      "run": 1,
+      "ttft_ms": 80.80254192464054,
+      "server_ttft_audio_out_ms": 72.213,
+      "wer": 1.16,
+      "cer": 0.7777777777777778,
+      "hyp": "The poor ass is white, and a scratch, a scratch, a scratch, a scratch, a scratch. And a tree! And a puff, and a flower. It's a scratch, a scratch, a scratch.",
+      "ref": "The product of three and seven is 3 times 7 equals 21, and the Pythagorean theorem is a squared plus b squared equals c squared."
+    },
+    {
+      "voice": "en_US-lessac-low.onnx",
+      "case": "math2",
+      "run": 1,
+      "ttft_ms": 78.56149994768202,
+      "server_ttft_audio_out_ms": 64.832,
+      "wer": 0.9818181818181818,
+      "cer": 0.9009009009009009,
+      "hyp": "When I communicate it, I cannot be aware of that. When I come to a stop, I cannot kiss again. I cannot forget that when Iify it, I cannot be aware of that. When I communicate it, I say this graph, this graph scholar curtain, this graph graph, this graph. This graph graph, this435 datamusic.",
+      "ref": "The derivative of e to the power of x with respect to x is d over d x e to the power of x equals e to the power of x, and the quadratic formula is x equals minus b plus or minus square root of b squared minus 4 a c over 2 a."
+    },
+    {
+      "voice": "en_US-lessac-medium.onnx",
+      "case": "plain",
+      "run": 1,
+      "ttft_ms": 66.82762503623962,
+      "server_ttft_audio_out_ms": 56.37,
+      "wer": 1.2352941176470589,
+      "cer": 0.7310924369747899,
+      "hyp": "It's on my tongue, the shi-pup-pup-pup! For sure, I shall be... YO, the shi-pup-pup-pup!",
+      "ref": "A practical streaming text to speech benchmark should keep first audio latency low while preserving clear pronunciation."
+    },
+    {
+      "voice": "en_US-lessac-medium.onnx",
+      "case": "math",
+      "run": 1,
+      "ttft_ms": 61.52229197323322,
+      "server_ttft_audio_out_ms": 60.216,
+      "wer": 0.88,
+      "cer": 0.746031746031746,
+      "hyp": "The poor earth, earth, swan, shavan, shavan, shavan, earth, quirk a year. And the prophet one fires the precious flesh. Good job.",
+      "ref": "The product of three and seven is 3 times 7 equals 21, and the Pythagorean theorem is a squared plus b squared equals c squared."
+    },
+    {
+      "voice": "en_US-lessac-medium.onnx",
+      "case": "math2",
+      "run": 1,
+      "ttft_ms": 76.20204193517566,
+      "server_ttft_audio_out_ms": 62.703,
+      "wer": 0.8909090909090909,
+      "cer": 0.6711711711711712,
+      "hyp": "that you have had kind of the pose as the path is about the bridge as the path of the Jinnah isn't around I shout the Bromcha I push you brush the water, brush the water, brush the water.",
+      "ref": "The derivative of e to the power of x with respect to x is d over d x e to the power of x equals e to the power of x, and the quadratic formula is x equals minus b plus or minus square root of b squared minus 4 a c over 2 a."
+    },
+    {
+      "voice": "en_US-lessac-high.onnx",
+      "case": "plain",
+      "run": 1,
+      "ttft_ms": 282.75641694199294,
+      "server_ttft_audio_out_ms": 281.336,
+      "wer": 2.235294117647059,
+      "cer": 0.8403361344537815,
+      "hyp": "The poor pete, found a trap such a spark a bug a bug a bug a bug such a a bug such a me you show a a a a a a a a a a a a a",
+      "ref": "A practical streaming text to speech benchmark should keep first audio latency low while preserving clear pronunciation."
+    },
+    {
+      "voice": "en_US-lessac-high.onnx",
+      "case": "math",
+      "run": 1,
+      "ttft_ms": 365.2499170275405,
+      "server_ttft_audio_out_ms": 363.813,
+      "wer": 1.32,
+      "cer": 0.873015873015873,
+      "hyp": "The poor girl, the swan shaffers, what a shaffers, and a peace, what a year. And the prophet, who a fire, she's a shapel, a precious, a shapel, a shapel, a shapel, a shapel, a shapel.",
+      "ref": "The product of three and seven is 3 times 7 equals 21, and the Pythagorean theorem is a squared plus b squared equals c squared."
+    },
+    {
+      "voice": "en_US-lessac-high.onnx",
+      "case": "math2",
+      "run": 1,
+      "ttft_ms": 405.9275420149788,
+      "server_ttft_audio_out_ms": 404.311,
+      "wer": 0.9272727272727272,
+      "cer": 0.7477477477477478,
+      "hyp": "This is the greatest way we'll pass. The greatest way we'll pass. This is the greatest way we'll pass.",
+      "ref": "The derivative of e to the power of x with respect to x is d over d x e to the power of x equals e to the power of x, and the quadratic formula is x equals minus b plus or minus square root of b squared minus 4 a c over 2 a."
+    }
+  ]
+}

@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import inspect
+import json
 import os
+from pathlib import Path
 from typing import Any, Optional
 
 import numpy as np
@@ -26,6 +28,18 @@ def _env_bool(name: str) -> Optional[bool]:
     if val is None or val == "":
         return None
     return val.strip().lower() in {"1", "true", "yes", "y", "on"}
+
+
+def _env_int(name: str) -> Optional[int]:
+    val = os.environ.get(name)
+    if val is None or val == "":
+        return None
+    return int(val)
+
+
+def _env_list(name: str) -> list[str]:
+    val = os.environ.get(name, "")
+    return [item.strip() for item in val.split(",") if item.strip()]
 
 
 class PiperBackend:
@@ -54,6 +68,12 @@ class PiperBackend:
         config_path: Optional[str],
         use_cuda: bool,
     ) -> Any:
+        providers = _env_list("PIPER_PROVIDERS")
+        if providers:
+            return self._load_voice_with_providers(
+                PiperVoice, voice_path, config_path, providers
+            )
+
         sig = inspect.signature(PiperVoice.load)
         kwargs: dict[str, Any] = {}
         if "config_path" in sig.parameters and config_path:
@@ -61,6 +81,51 @@ class PiperBackend:
         if "use_cuda" in sig.parameters:
             kwargs["use_cuda"] = use_cuda
         return PiperVoice.load(voice_path, **kwargs)
+
+    def _load_voice_with_providers(
+        self,
+        PiperVoice: Any,
+        voice_path: str,
+        config_path: Optional[str],
+        providers: list[str],
+    ) -> Any:
+        try:
+            import onnxruntime as ort  # type: ignore
+            from piper import PiperConfig  # type: ignore
+        except Exception as exc:
+            raise RuntimeError(
+                "Custom PIPER_PROVIDERS requires onnxruntime and piper config APIs."
+            ) from exc
+
+        model_path = Path(voice_path)
+        cfg_path = Path(config_path) if config_path else Path(f"{voice_path}.json")
+        with cfg_path.open("r", encoding="utf-8") as f:
+            cfg_dict = json.load(f)
+
+        # Keep CPU as a fallback provider unless explicitly disabled.
+        providers_final = list(providers)
+        if _env_flag("PIPER_APPEND_CPU_PROVIDER") or "CPUExecutionProvider" not in {
+            p for p in providers_final
+        }:
+            providers_final.append("CPUExecutionProvider")
+
+        sess_options = ort.SessionOptions()
+        inter = _env_int("PIPER_INTER_OP_THREADS")
+        intra = _env_int("PIPER_INTRA_OP_THREADS")
+        if inter is not None:
+            sess_options.inter_op_num_threads = max(1, inter)
+        if intra is not None:
+            sess_options.intra_op_num_threads = max(1, intra)
+
+        session = ort.InferenceSession(
+            str(model_path),
+            sess_options=sess_options,
+            providers=providers_final,
+        )
+        return PiperVoice(
+            config=PiperConfig.from_dict(cfg_dict),
+            session=session,
+        )
 
     def _build_syn_config(self) -> Optional[Any]:
         try:
@@ -91,6 +156,16 @@ class PiperBackend:
         return SynthesisConfig(**params)
 
     def warmup(self) -> None:
+        # Prime runtime/session initialization so first user request avoids setup jitter.
+        if _env_flag("PIPER_SKIP_WARMUP"):
+            return None
+        text = os.environ.get("PIPER_WARMUP_TEXT", "hello")
+        try:
+            stream = self.synthesize_stream(text)
+            next(iter(stream), None)
+        except Exception:
+            # Startup warmup should never block serving if priming fails.
+            return None
         return None
 
     def synthesize(self, text: str) -> SynthResult:

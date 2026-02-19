@@ -1,0 +1,8 @@
+# One case per line, or use: <name><tab><text>
+plain_1	Streaming text to speech should start speaking quickly while keeping words intelligible and stable.
+plain_2	A robust production websocket server should handle concurrent send and receive with low jitter.
+math_1	The product of three and seven is \(3 \times 7 = 21\).
+math_2	For a right triangle, \(a^2 + b^2 = c^2\).
+math_3	The derivative of \(e^x\) is \(\frac{d}{dx} e^x = e^x\).
+units_1	The vehicle accelerated at 9.8 m/s^2 and reached 120 km/h in 12 s.
+mixed_1	Probability of success is 95% when the sample size is n equals 200.

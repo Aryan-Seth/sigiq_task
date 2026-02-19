@@ -1,0 +1,175 @@
+{
+  "config": {
+    "math_normalizer": "rule",
+    "chunk_mode": "ramp",
+    "chunk_size": 22,
+    "chunk_plan": [
+      4,
+      8,
+      32
+    ],
+    "delay": 0.01,
+    "runs": 1,
+    "variants": [
+      {
+        "backend": "piper",
+        "name": "en_US-lessac-medium.onnx"
+      },
+      {
+        "backend": "say",
+        "name": "Eddy (English (US))"
+      },
+      {
+        "backend": "kokoro",
+        "name": "af_sarah"
+      }
+    ],
+    "cases": [
+      "plain",
+      "math",
+      "math2"
+    ]
+  },
+  "summary": [
+    {
+      "backend": "piper",
+      "variant": "en_US-lessac-medium.onnx",
+      "ttft_p50_ms": 65.29958290047944,
+      "wer_mean": 0.07515151515151515,
+      "cer_mean": 0.03996853996853997
+    },
+    {
+      "backend": "say",
+      "variant": "Eddy (English (US))",
+      "ttft_p50_ms": 417.8661669138819,
+      "wer_mean": 0.28263814616755795,
+      "cer_mean": 0.2117369470310647
+    },
+    {
+      "backend": "kokoro",
+      "variant": "af_sarah",
+      "ttft_p50_ms": 955.5691248970106,
+      "wer_mean": 0.07515151515151515,
+      "cer_mean": 0.042971542971542966
+    }
+  ],
+  "pareto_frontier": [
+    {
+      "backend": "piper",
+      "variant": "en_US-lessac-medium.onnx",
+      "ttft_p50_ms": 65.29958290047944,
+      "wer_mean": 0.07515151515151515,
+      "cer_mean": 0.03996853996853997
+    }
+  ],
+  "rows": [
+    {
+      "backend": "piper",
+      "variant": "en_US-lessac-medium.onnx",
+      "case": "plain",
+      "run": 1,
+      "ttft_ms": 65.29958290047944,
+      "server_ttft_audio_out_ms": 59.058,
+      "wer": 0.0,
+      "cer": 0.0,
+      "hyp": "A practical, streaming text to Speech Benchmark should keep first audio latency low while preserving clear pronunciation.",
+      "ref": "A practical streaming text to speech benchmark should keep first audio latency low while preserving clear pronunciation."
+    },
+    {
+      "backend": "piper",
+      "variant": "en_US-lessac-medium.onnx",
+      "case": "math",
+      "run": 1,
+      "ttft_ms": 55.034416960552335,
+      "server_ttft_audio_out_ms": 53.343,
+      "wer": 0.08,
+      "cer": 0.07936507936507936,
+      "hyp": "The product of 3 and 7 is 3 times 7 equals 21, and the Pythagorean theorem is a squared plus b squared equals c squared.",
+      "ref": "The product of three and seven is 3 times 7 equals 21, and the Pythagorean theorem is a squared plus b squared equals c squared."
+    },
+    {
+      "backend": "piper",
+      "variant": "en_US-lessac-medium.onnx",
+      "case": "math2",
+      "run": 1,
+      "ttft_ms": 77.39387510810047,
+      "server_ttft_audio_out_ms": 63.796,
+      "wer": 0.14545454545454545,
+      "cer": 0.04054054054054054,
+      "hyp": "The derivative of the power of x with respect to x is d over dx e to the power of x equals e to the power of x. And the quadratic formula is x equals minus b plus or minus square root of b squared minus 4s c over 2a.",
+      "ref": "The derivative of e to the power of x with respect to x is d over d x e to the power of x equals e to the power of x, and the quadratic formula is x equals minus b plus or minus square root of b squared minus 4 a c over 2 a."
+    },
+    {
+      "backend": "say",
+      "variant": "Eddy (English (US))",
+      "case": "plain",
+      "run": 1,
+      "ttft_ms": 418.9247499452904,
+      "server_ttft_audio_out_ms": 417.678,
+      "wer": 0.058823529411764705,
+      "cer": 0.01680672268907563,
+      "hyp": "practical. Streaming text to speech benchmark should keep first audio latency low while preserving clear pronunciation.",
+      "ref": "A practical streaming text to speech benchmark should keep first audio latency low while preserving clear pronunciation."
+    },
+    {
+      "backend": "say",
+      "variant": "Eddy (English (US))",
+      "case": "math",
+      "run": 1,
+      "ttft_ms": 417.8661669138819,
+      "server_ttft_audio_out_ms": 416.746,
+      "wer": 0.28,
+      "cer": 0.19047619047619047,
+      "hyp": "product. of 3 and 7 is 3 times 7 equals 21 and a Pythagorean theorem is a square plus Speed square equals C squared.",
+      "ref": "The product of three and seven is 3 times 7 equals 21, and the Pythagorean theorem is a squared plus b squared equals c squared."
+    },
+    {
+      "backend": "say",
+      "variant": "Eddy (English (US))",
+      "case": "math2",
+      "run": 1,
+      "ttft_ms": 412.4006249476224,
+      "server_ttft_audio_out_ms": 411.004,
+      "wer": 0.509090909090909,
+      "cer": 0.42792792792792794,
+      "hyp": "the power of X with respect to X is d over d X e to the power of X e to the power of X and it would radical formulas X e to the power of X e to the power of X e to the power",
+      "ref": "The derivative of e to the power of x with respect to x is d over d x e to the power of x equals e to the power of x, and the quadratic formula is x equals minus b plus or minus square root of b squared minus 4 a c over 2 a."
+    },
+    {
+      "backend": "kokoro",
+      "variant": "af_sarah",
+      "case": "plain",
+      "run": 1,
+      "ttft_ms": 854.3967499863356,
+      "server_ttft_audio_out_ms": 851.75,
+      "wer": 0.0,
+      "cer": 0.0,
+      "hyp": "A practical, streaming text to Speech Benchmark should keep first audio latency low while preserving clear pronunciation.",
+      "ref": "A practical streaming text to speech benchmark should keep first audio latency low while preserving clear pronunciation."
+    },
+    {
+      "backend": "kokoro",
+      "variant": "af_sarah",
+      "case": "math",
+      "run": 1,
+      "ttft_ms": 1018.1301669217646,
+      "server_ttft_audio_out_ms": 1013.379,
+      "wer": 0.08,
+      "cer": 0.07936507936507936,
+      "hyp": "The product of 3 and 7 is 3 times 7 equals 21. And the Pythagorean theorem is a squared plus b squared equals c squared.",
+      "ref": "The product of three and seven is 3 times 7 equals 21, and the Pythagorean theorem is a squared plus b squared equals c squared."
+    },
+    {
+      "backend": "kokoro",
+      "variant": "af_sarah",
+      "case": "math2",
+      "run": 1,
+      "ttft_ms": 955.5691248970106,
+      "server_ttft_audio_out_ms": 952.358,
+      "wer": 0.14545454545454545,
+      "cer": 0.04954954954954955,
+      "hyp": "The derivative of the power of x with respect to x is d over dxe to the power of x equals e to the power of x. And the quadratic formula is x equals minus b plus or minus square root of b squared minus for a c over 2a.",
+      "ref": "The derivative of e to the power of x with respect to x is d over d x e to the power of x equals e to the power of x, and the quadratic formula is x equals minus b plus or minus square root of b squared minus 4 a c over 2 a."
+    }
+  ]
+}

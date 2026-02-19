@@ -33,6 +33,7 @@ def alignment_from_duration(
             "chars": [],
             "char_start_times_ms": [],
             "char_durations_ms": [],
+            "char_indices": [],
         }
 
     total_ms_int = max(0, int(round(total_ms)))
@@ -66,6 +67,7 @@ def alignment_from_duration(
         "chars": chars,
         "char_start_times_ms": start_times,
         "char_durations_ms": base.tolist(),
+        "char_indices": list(range(n)),
     }
 
 
@@ -74,6 +76,9 @@ def split_alignment_for_window(
     win_start_ms: float,
     win_end_ms: float,
 ) -> Dict[str, List[int]]:
+    # Emit each character exactly once based on its start time.
+    # Overlap-based slicing duplicates long characters across adjacent windows,
+    # which leads to repeated subtitles like "TTThhheee".
     chars_out: List[str] = []
     starts_out: List[int] = []
     durs_out: List[int] = []
@@ -81,25 +86,38 @@ def split_alignment_for_window(
     chars = alignment.get("chars", [])
     starts = alignment.get("char_start_times_ms", [])
     durs = alignment.get("char_durations_ms", [])
+    idxs = alignment.get("char_indices", [])
+    if not isinstance(idxs, list) or len(idxs) != len(chars):
+        idxs = list(range(len(chars)))
+    idxs_out: List[int] = []
 
-    for ch, start, dur in zip(chars, starts, durs):
-        end = start + dur
-        if end <= win_start_ms or start >= win_end_ms:
+    if win_end_ms <= win_start_ms:
+        return {
+            "chars": [],
+            "char_start_times_ms": [],
+            "char_durations_ms": [],
+            "char_indices": [],
+        }
+
+    for ch, start, dur, idx in zip(chars, starts, durs, idxs):
+        start_f = float(start)
+        dur_f = float(dur)
+        if start_f < win_start_ms or start_f >= win_end_ms:
             continue
-        overlap_start = max(start, win_start_ms)
-        overlap_end = min(end, win_end_ms)
-        rel_start = int(round(overlap_start - win_start_ms))
-        rel_dur = int(round(overlap_end - overlap_start))
-        if rel_dur <= 0:
-            continue
+        end_f = start_f + max(0.0, dur_f)
+        clipped_end_f = min(max(end_f, start_f), win_end_ms)
+        rel_start = max(0, int(round(start_f - win_start_ms)))
+        rel_dur = max(1, int(round(clipped_end_f - start_f)))
         chars_out.append(ch)
         starts_out.append(rel_start)
         durs_out.append(rel_dur)
+        idxs_out.append(int(idx))
 
     return {
         "chars": chars_out,
         "char_start_times_ms": starts_out,
         "char_durations_ms": durs_out,
+        "char_indices": idxs_out,
     }
 
 
@@ -113,6 +131,7 @@ def scale_alignment_to_duration(
             "chars": [],
             "char_start_times_ms": [],
             "char_durations_ms": [],
+            "char_indices": [],
         }
 
     durations = alignment.get("char_durations_ms", [])
@@ -146,4 +165,5 @@ def scale_alignment_to_duration(
         "chars": chars,
         "char_start_times_ms": start_times,
         "char_durations_ms": base.tolist(),
+        "char_indices": alignment.get("char_indices", list(range(len(chars)))),
     }

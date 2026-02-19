@@ -2,8 +2,11 @@ __pycache__/
 *.pyc
 *.pyo
 .venv/
+node_modules/
 output.wav
 server.log
 *.onnx
 *.onnx.json
 *.wav
+.DS_Store
+models/

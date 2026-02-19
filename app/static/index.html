@@ -1,0 +1,850 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TTS Streaming Workbench</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <style>
+    :root {
+      --bg-0: #f4f0e6;
+      --bg-1: #ece5d6;
+      --panel: #fffdf8;
+      --panel-2: #f7f1e4;
+      --border: #d5c9b7;
+      --ink: #1f2d3d;
+      --muted: #6c7680;
+      --accent: #145a72;
+      --accent-2: #2a9d8f;
+      --warn: #c47b39;
+      --danger: #b1463a;
+      --shadow: 0 12px 28px rgba(33, 42, 51, 0.08);
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-sm: 9px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Space Grotesk", "Avenir Next", "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 100%);
+      color: var(--ink);
+      min-height: 100vh;
+      padding: 18px;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(1000px 420px at 0% -12%, rgba(20, 90, 114, 0.11) 0%, rgba(20, 90, 114, 0) 62%);
+      z-index: -1;
+    }
+
+    .app-shell {
+      width: min(1200px, 100%);
+      margin: 0 auto;
+      display: grid;
+      gap: 14px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 14px;
+    }
+
+    .hero {
+      display: grid;
+      gap: 12px;
+    }
+
+    .hero-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(1.2rem, 1.8vw, 1.8rem);
+      letter-spacing: 0.01em;
+    }
+
+    .hero p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .kpi {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 10px;
+      min-height: 76px;
+    }
+
+    .kpi-label {
+      font-size: 0.77rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .kpi-value {
+      margin-top: 6px;
+      font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+      font-size: 1.02rem;
+      color: var(--ink);
+      font-weight: 500;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 14px;
+      align-items: start;
+    }
+
+    .stack {
+      display: grid;
+      gap: 14px;
+    }
+
+    .section-title {
+      margin: 0 0 8px;
+      font-size: 1rem;
+      letter-spacing: 0.01em;
+    }
+
+    .section-note {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    textarea,
+    input,
+    select {
+      width: 100%;
+      font: inherit;
+      color: var(--ink);
+      background: #fffdfa;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      outline: none;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    textarea:focus,
+    input:focus,
+    select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(20, 90, 114, 0.12);
+    }
+
+    textarea {
+      min-height: 150px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    .control-grid {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-top: 12px;
+    }
+
+    label {
+      display: grid;
+      gap: 5px;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .btns {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 9px 13px;
+      font: inherit;
+      cursor: pointer;
+      background: #d8cec0;
+      color: #2a343e;
+      transition: transform 0.12s ease, opacity 0.12s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      opacity: 0.96;
+    }
+
+    button.primary {
+      background: var(--accent);
+      color: #f6fbff;
+      font-weight: 700;
+    }
+
+    button.warn {
+      background: var(--warn);
+      color: #fef9f2;
+      font-weight: 700;
+    }
+
+    .status {
+      margin-top: 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      padding: 10px;
+      min-height: 58px;
+      background: #fcf8ef;
+      color: #225f57;
+      font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+      font-size: 0.82rem;
+      white-space: pre-wrap;
+    }
+
+    .caption {
+      min-height: 145px;
+      line-height: 1.6;
+      font-size: 1rem;
+      white-space: pre-wrap;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      padding: 12px;
+      background: #fcf8ef;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .metrics-box {
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: #f9f4ea;
+      padding: 11px;
+    }
+
+    .metrics-title {
+      margin: 0 0 6px;
+      font-size: 0.79rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .metrics-text {
+      margin: 0;
+      white-space: pre-wrap;
+      font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+      font-size: 0.82rem;
+      line-height: 1.45;
+      color: #273746;
+    }
+
+    code {
+      font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+      font-size: 0.86em;
+      background: rgba(20, 90, 114, 0.08);
+      border: 1px solid rgba(20, 90, 114, 0.25);
+      border-radius: 6px;
+      padding: 1px 5px;
+    }
+
+    @media (max-width: 1080px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 800px) {
+      .kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .control-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .metrics-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 520px) {
+      body {
+        padding: 10px;
+      }
+
+      .card {
+        border-radius: 12px;
+      }
+
+      .control-grid,
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <section class="card hero">
+      <div class="hero-head">
+        <h1>TTS Streaming Workbench</h1>
+      </div>
+      <p>Streams text chunks to <code>/tts</code>, plays 44.1 kHz PCM audio, and reveals subtitles with alignment timing. Includes live client/server latency telemetry.</p>
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-label">Client TTFT</div>
+          <div id="kpiTTFT" class="kpi-value">-</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Alignment Coverage</div>
+          <div id="kpiCoverage" class="kpi-value">-</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Avg Misalignment</div>
+          <div id="kpiMisalign" class="kpi-value">-</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Server Model Compute</div>
+          <div id="kpiModel" class="kpi-value">-</div>
+        </div>
+      </div>
+    </section>
+
+    <main class="layout">
+      <div class="stack">
+        <section class="card">
+          <h2 class="section-title">Input & Streaming Controls</h2>
+          <p class="section-note">Math examples are preloaded. Use ramped chunks for lower startup latency, then compare in the metrics panel.</p>
+          <label for="text"><strong>Input Text</strong></label>
+          <textarea id="text">The product of three and seven is \(3 \times 7 = 21\).
+For a right triangle, the Pythagorean theorem states \(a^2 + b^2 = c^2\).
+The derivative of \(e^x\) with respect to \(x\) is \(\frac{d}{dx} e^x = e^x\).</textarea>
+
+          <div class="control-grid">
+            <label>WS URL<input id="url" value=""></label>
+            <label>Chunk Mode
+              <select id="chunkMode">
+                <option value="ramp" selected>Ramp</option>
+                <option value="fixed">Fixed</option>
+              </select>
+            </label>
+            <label>Chunk Plan<input id="chunkPlan" value="4,8,32"></label>
+            <label>Chunk Start<input id="chunkStart" type="number" min="1" value="4"></label>
+            <label>Chunk Max<input id="chunkMax" type="number" min="1" value="32"></label>
+            <label>Growth x<input id="chunkGrowth" type="number" min="1" step="0.1" value="2.0"></label>
+            <label>Fixed Chunk<input id="chunkSize" type="number" min="1" value="22"></label>
+            <label>Chunk Delay (ms)<input id="chunkDelayMs" type="number" min="0" value="25"></label>
+            <label>Gain<input id="gain" type="number" min="0" step="0.1" value="1.0"></label>
+          </div>
+
+          <div class="btns">
+            <button id="connectBtn">Connect</button>
+            <button id="startBtn" class="primary">Stream + Play</button>
+            <button id="stopBtn" class="warn">Stop</button>
+          </div>
+          <div id="status" class="status"></div>
+        </section>
+
+        <section class="card">
+          <h2 class="section-title">Subtitles</h2>
+          <div id="caption" class="caption"></div>
+        </section>
+      </div>
+
+      <div class="stack">
+        <section class="card">
+          <h2 class="section-title">Rendered Math (Source)</h2>
+          <p class="section-note">Progressively reveals original source text with KaTeX rendering synchronized to alignment indices.</p>
+          <div id="captionLatex" class="caption"></div>
+        </section>
+
+        <section class="card">
+          <h2 class="section-title">Metrics</h2>
+          <p class="section-note">Compact live view of the most important client and server latency metrics.</p>
+          <div class="metrics-grid">
+            <div class="metrics-box">
+              <div class="metrics-title">Client</div>
+              <pre id="metricsClient" class="metrics-text"></pre>
+            </div>
+            <div class="metrics-box">
+              <div class="metrics-title">Server</div>
+              <pre id="metricsServer" class="metrics-text"></pre>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const SAMPLE_RATE = 44100;
+
+    function makeRunMetrics() {
+      return {
+        runStartMs: performance.now(),
+        firstAnySendMs: null,
+        firstNonWsSendMs: null,
+        firstRecvMs: null,
+        firstAudioMs: null,
+        lastAudioMs: null,
+        audioChunks: 0,
+        audioBytes: 0,
+        samplesSoFar: 0,
+        alignedTotalReported: 0,
+        alignedStreamChars: [],
+        alignedUniqueIndices: new Set(),
+        alignedNegativeDurations: 0,
+        alignedNonMonotonic: 0,
+        alignedPrevStartMs: -1e9,
+        alignedLastEndMs: 0.0,
+        serverMetrics: null
+      };
+    }
+
+    const state = {
+      ws: null,
+      audioCtx: null,
+      gainNode: null,
+      playhead: 0,
+      connected: false,
+      captions: "",
+      sourceText: "",
+      maxSourceIdxRevealed: -1,
+      timers: [],
+      streamId: 0,
+      lastQueuedCaptionChar: "",
+      lastQueuedCaptionMs: -1e9,
+      run: makeRunMetrics()
+    };
+
+    function log(msg) {
+      $("status").textContent = msg + "\n" + $("status").textContent;
+    }
+
+    function wsDefault() {
+      const proto = location.protocol === "https:" ? "wss" : "ws";
+      return `${proto}://${location.host}/tts`;
+    }
+
+    function parseChunkPlan(raw) {
+      if (!raw) return [];
+      return String(raw)
+        .split(",")
+        .map((x) => Number(x.trim()))
+        .filter((n) => Number.isFinite(n) && n >= 1)
+        .map((n) => Math.floor(n));
+    }
+
+    function fmtMs(v) {
+      return Number.isFinite(v) ? `${v.toFixed(1)} ms` : "-";
+    }
+
+    function fmtPct(v) {
+      return Number.isFinite(v) ? `${(v * 100).toFixed(1)}%` : "-";
+    }
+
+    function fmtNum(v) {
+      return Number.isFinite(v) ? `${v}` : "-";
+    }
+
+    function ensureAudio() {
+      if (!state.audioCtx) {
+        state.audioCtx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: SAMPLE_RATE });
+        state.gainNode = state.audioCtx.createGain();
+        state.gainNode.connect(state.audioCtx.destination);
+      }
+      state.gainNode.gain.value = Number($("gain").value || 1.0);
+    }
+
+    function clearCaptionTimers() {
+      state.timers.forEach((t) => clearTimeout(t));
+      state.timers = [];
+    }
+
+    function renderLatexCaption(text) {
+      const el = $("captionLatex");
+      el.textContent = text || "";
+      if (typeof window.renderMathInElement !== "function") return;
+      const opens = (text.match(/\\\(/g) || []).length;
+      const closes = (text.match(/\\\)/g) || []).length;
+      if (opens !== closes) return;
+      try {
+        window.renderMathInElement(el, {
+          delimiters: [
+            { left: "\\(", right: "\\)", display: false },
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false
+        });
+      } catch (_) {}
+    }
+
+    function computeClientMetrics() {
+      const run = state.run;
+      const targetLen = (state.sourceText || "").length;
+      const ref = run.firstNonWsSendMs ?? run.firstAnySendMs ?? run.runStartMs;
+      let matchedByIdx = 0;
+      run.alignedUniqueIndices.forEach((idx) => {
+        if (Number.isFinite(idx) && idx >= 0 && idx < targetLen) {
+          matchedByIdx += 1;
+        }
+      });
+      const coverage = targetLen > 0 ? (matchedByIdx / targetLen) : NaN;
+      const audioTimelineMs = (run.samplesSoFar / SAMPLE_RATE) * 1000.0;
+      const tailErrorMs = run.alignedLastEndMs - audioTimelineMs;
+      const avgMisalignmentMs = run.alignedTotalReported > 0
+        ? Math.abs(tailErrorMs) / run.alignedTotalReported
+        : NaN;
+      const ttftRecvMs = run.firstAudioMs !== null ? (run.firstAudioMs - ref) : NaN;
+      const ttfbMsgMs = run.firstRecvMs !== null ? (run.firstRecvMs - ref) : NaN;
+      const totalMs = run.lastAudioMs !== null ? (run.lastAudioMs - ref) : NaN;
+      const charsPerS = Number.isFinite(totalMs) && totalMs > 0
+        ? targetLen / (totalMs / 1000.0)
+        : NaN;
+      return {
+        chars: targetLen,
+        client_ttft_recv_ms: ttftRecvMs,
+        client_ttfb_msg_ms: ttfbMsgMs,
+        client_total_audio_ms: totalMs,
+        client_chars_per_s: charsPerS,
+        audio_chunks: run.audioChunks,
+        audio_bytes: run.audioBytes,
+        alignment_total_reported_chars: run.alignedTotalReported,
+        alignment_stream_chars: run.alignedStreamChars.length,
+        alignment_unique_indices: run.alignedUniqueIndices.size,
+        alignment_coverage: coverage,
+        alignment_missing_chars: Math.max(0, targetLen - matchedByIdx),
+        alignment_non_monotonic_count: run.alignedNonMonotonic,
+        alignment_non_positive_duration_count: run.alignedNegativeDurations,
+        alignment_tail_error_ms: tailErrorMs,
+        alignment_abs_tail_error_ms: Math.abs(tailErrorMs),
+        avg_misalignment_ms: avgMisalignmentMs
+      };
+    }
+
+    function updateKpis(c, s) {
+      const setText = (id, value) => {
+        const el = $(id);
+        if (el) el.textContent = value;
+      };
+      setText("kpiTTFT", fmtMs(c.client_ttft_recv_ms));
+      setText("kpiCoverage", fmtPct(c.alignment_coverage));
+      setText("kpiMisalign", fmtMs(c.avg_misalignment_ms));
+      setText("kpiModel", fmtMs(Number(s.model_compute_ms)));
+    }
+
+    function renderMetrics() {
+      const c = computeClientMetrics();
+      $("metricsClient").textContent =
+        `TTFT (recv): ${fmtMs(c.client_ttft_recv_ms)}\n` +
+        `Total audio latency: ${fmtMs(c.client_total_audio_ms)}\n` +
+        `Throughput (chars/s): ${Number.isFinite(c.client_chars_per_s) ? c.client_chars_per_s.toFixed(2) : "-"}\n` +
+        `Alignment coverage: ${fmtPct(c.alignment_coverage)}\n` +
+        `Avg misalignment: ${fmtMs(c.avg_misalignment_ms)}\n` +
+        `Audio chunks: ${fmtNum(c.audio_chunks)}`;
+
+      const s = state.run.serverMetrics || {};
+      const postModelTotalMs = Number(
+        s.post_model_total_incl_aligner_ms ?? s.post_model_to_audio_out_ms
+      );
+      const alignerMs = Number(s.gap_aligner_ms);
+      const packagingOnlyDirectMs = Number(
+        s.packaging_only_ms ?? s.gap_aligner_done_to_audio_out_ms
+      );
+      const packagingOnlyMs = Number.isFinite(packagingOnlyDirectMs)
+        ? packagingOnlyDirectMs
+        : (
+            Number.isFinite(postModelTotalMs) && Number.isFinite(alignerMs)
+              ? Math.max(0, postModelTotalMs - alignerMs)
+              : NaN
+          );
+      $("metricsServer").textContent =
+        `TTFT (audio out): ${fmtMs(Number(s.ttft_audio_out_ms))}\n` +
+        `Model compute: ${fmtMs(Number(s.model_compute_ms))}\n` +
+        `Pre-model wait: ${fmtMs(Number(s.gap_buffer_to_synth_ms))}\n` +
+        `Math normalize: ${fmtMs(Number(s.gap_math_normalize_ms))}\n` +
+        `Post-model total (incl aligner): ${fmtMs(postModelTotalMs)}\n` +
+        `Aligner cost: ${fmtMs(alignerMs)}\n` +
+        `Packaging only (post-aligner): ${fmtMs(packagingOnlyMs)}`;
+
+      updateKpis(c, s);
+    }
+
+    function ingestAlignment(alignment, chunkStartMs) {
+      const chars = alignment?.chars || [];
+      const starts = alignment?.char_start_times_ms || [];
+      const durs = alignment?.char_durations_ms || [];
+      const idxs = alignment?.char_indices || [];
+      const n = Math.min(chars.length, starts.length, durs.length);
+      for (let i = 0; i < n; i++) {
+        state.run.alignedTotalReported += 1;
+        state.run.alignedStreamChars.push(String(chars[i] || ""));
+        const idx = Number(idxs[i]);
+        if (Number.isFinite(idx)) {
+          state.run.alignedUniqueIndices.add(Math.floor(idx));
+        }
+        const absStartMs = chunkStartMs + Number(starts[i] || 0);
+        if (absStartMs < state.run.alignedPrevStartMs) {
+          state.run.alignedNonMonotonic += 1;
+        }
+        state.run.alignedPrevStartMs = absStartMs;
+        const durMs = Number(durs[i] || 0);
+        if (!(durMs > 0)) {
+          state.run.alignedNegativeDurations += 1;
+        }
+        state.run.alignedLastEndMs = Math.max(state.run.alignedLastEndMs, absStartMs + durMs);
+      }
+    }
+
+    function scheduleCaptionChars(chunkStartSec, alignment, streamId) {
+      const chars = alignment?.chars || [];
+      const starts = alignment?.char_start_times_ms || [];
+      const idxs = alignment?.char_indices || [];
+      for (let i = 0; i < chars.length; i++) {
+        const ch = String(chars[i] || "");
+        const startMs = Number(starts[i] || 0);
+        const idx = Number(idxs[i]);
+        const absMs = (chunkStartSec * 1000) + startMs;
+        if (
+          ch === state.lastQueuedCaptionChar &&
+          (absMs - state.lastQueuedCaptionMs) <= 15
+        ) {
+          continue;
+        }
+        state.lastQueuedCaptionChar = ch;
+        state.lastQueuedCaptionMs = absMs;
+        const tMs = ((chunkStartSec + startMs / 1000) - state.audioCtx.currentTime) * 1000;
+        const handle = setTimeout(() => {
+          if (streamId !== state.streamId) return;
+          state.captions += ch;
+          $("caption").textContent = state.captions;
+          if (
+            Number.isFinite(idx) &&
+            idx >= 0 &&
+            state.sourceText &&
+            idx > state.maxSourceIdxRevealed
+          ) {
+            state.maxSourceIdxRevealed = Math.min(
+              Math.floor(idx),
+              state.sourceText.length - 1
+            );
+            renderLatexCaption(
+              state.sourceText.slice(0, state.maxSourceIdxRevealed + 1)
+            );
+          }
+        }, Math.max(0, tMs));
+        state.timers.push(handle);
+      }
+    }
+
+    function pcm16Base64ToFloat32(b64) {
+      const raw = atob(b64);
+      const n = raw.length / 2;
+      const out = new Float32Array(n);
+      for (let i = 0; i < n; i++) {
+        let lo = raw.charCodeAt(i * 2);
+        let hi = raw.charCodeAt(i * 2 + 1);
+        let v = (hi << 8) | lo;
+        if (v & 0x8000) v = v - 0x10000;
+        out[i] = v / 32768;
+      }
+      return { samples: out, byteLength: raw.length };
+    }
+
+    function playChunk(audioB64, alignment, streamId) {
+      if (!audioB64) return { sampleCount: 0, byteLength: 0 };
+      ensureAudio();
+      const decoded = pcm16Base64ToFloat32(audioB64);
+      const samples = decoded.samples;
+      if (!samples.length) return { sampleCount: 0, byteLength: 0 };
+      const buf = state.audioCtx.createBuffer(1, samples.length, SAMPLE_RATE);
+      buf.copyToChannel(samples, 0);
+      const src = state.audioCtx.createBufferSource();
+      src.buffer = buf;
+      src.connect(state.gainNode);
+      const now = state.audioCtx.currentTime;
+      if (state.playhead < now + 0.03) state.playhead = now + 0.03;
+      const startAt = state.playhead;
+      src.start(startAt);
+      state.playhead += buf.duration;
+      scheduleCaptionChars(startAt, alignment, streamId);
+      return { sampleCount: samples.length, byteLength: decoded.byteLength };
+    }
+
+    async function connect() {
+      if (state.ws && state.connected) return;
+      const url = $("url").value.trim() || wsDefault();
+      $("url").value = url;
+      state.ws = new WebSocket(url);
+      state.ws.onopen = () => { state.connected = true; log(`connected: ${url}`); };
+      state.ws.onclose = (ev) => {
+        state.connected = false;
+        if (state.sourceText) {
+          renderLatexCaption(state.sourceText);
+        }
+        renderMetrics();
+        log(`closed: code=${ev.code} reason=${ev.reason || "-"}`);
+      };
+      state.ws.onerror = () => log("websocket error");
+      state.ws.onmessage = (ev) => {
+        try {
+          const payload = JSON.parse(ev.data);
+          if (state.run.firstRecvMs === null) {
+            state.run.firstRecvMs = performance.now();
+          }
+          if (payload && payload.type === "metrics") {
+            if (payload.metrics && typeof payload.metrics === "object") {
+              state.run.serverMetrics = payload.metrics;
+            }
+            renderMetrics();
+            return;
+          }
+          const audioB64 = payload.audio || "";
+          const alignment = payload.alignment || {};
+          if (!audioB64) {
+            return;
+          }
+          const nowMs = performance.now();
+          if (state.run.firstAudioMs === null) {
+            state.run.firstAudioMs = nowMs;
+          }
+          state.run.lastAudioMs = nowMs;
+          const chunkStartMs = (state.run.samplesSoFar / SAMPLE_RATE) * 1000.0;
+          const played = playChunk(audioB64, alignment, state.streamId);
+          state.run.audioChunks += played.sampleCount > 0 ? 1 : 0;
+          state.run.audioBytes += played.byteLength;
+          state.run.samplesSoFar += played.sampleCount;
+          ingestAlignment(alignment, chunkStartMs);
+          renderMetrics();
+        } catch (_) {
+          log("bad message");
+        }
+      };
+    }
+
+    async function streamText() {
+      await connect();
+      if (!state.connected) {
+        log("not connected yet; retry in 200ms");
+        await new Promise((r) => setTimeout(r, 200));
+      }
+      if (!state.connected) return;
+      ensureAudio();
+      const text = $("text").value || "";
+      state.streamId += 1;
+      state.captions = "";
+      state.sourceText = text;
+      state.maxSourceIdxRevealed = -1;
+      state.run = makeRunMetrics();
+      $("caption").textContent = "";
+      $("captionLatex").textContent = "";
+      clearCaptionTimers();
+      state.playhead = state.audioCtx.currentTime + 0.02;
+      state.lastQueuedCaptionChar = "";
+      state.lastQueuedCaptionMs = -1e9;
+      renderMetrics();
+
+      const chunkMode = String($("chunkMode").value || "fixed").toLowerCase();
+      const fixedSize = Math.max(1, Number($("chunkSize").value || 20));
+      const rampStart = Math.max(1, Number($("chunkStart").value || 4));
+      const rampMax = Math.max(rampStart, Number($("chunkMax").value || 32));
+      const rampGrowth = Math.max(1, Number($("chunkGrowth").value || 2.0));
+      const chunkPlan = parseChunkPlan($("chunkPlan").value || "");
+      const delayMs = Math.max(0, Number($("chunkDelayMs").value || 0));
+      state.run.firstAnySendMs = performance.now();
+      state.ws.send(JSON.stringify({ text: " ", flush: false }));
+      let rampSize = rampStart;
+      let planIdx = 0;
+      for (let i = 0; i < text.length;) {
+        const size = chunkMode === "ramp"
+          ? (chunkPlan.length > 0
+              ? chunkPlan[Math.min(planIdx, chunkPlan.length - 1)]
+              : Math.min(rampMax, Math.max(1, Math.round(rampSize))))
+          : fixedSize;
+        const part = text.slice(i, i + size);
+        if (state.run.firstNonWsSendMs === null && part.trim()) {
+          state.run.firstNonWsSendMs = performance.now();
+        }
+        state.ws.send(JSON.stringify({ text: part, flush: false }));
+        i += size;
+        if (chunkMode === "ramp" && chunkPlan.length > 0) {
+          planIdx += 1;
+        } else if (chunkMode === "ramp" && rampSize < rampMax) {
+          const next = Math.ceil(rampSize * rampGrowth);
+          rampSize = (!Number.isFinite(next) || next <= rampSize)
+            ? rampMax
+            : Math.min(rampMax, next);
+        }
+        if (delayMs > 0) await new Promise((r) => setTimeout(r, delayMs));
+      }
+      state.ws.send(JSON.stringify({ text: "", flush: true }));
+      state.ws.send(JSON.stringify({ text: "", flush: false }));
+      log(
+        chunkMode === "ramp"
+          ? `stream sent: ${text.length} chars (${chunkPlan.length > 0 ? `plan ${chunkPlan.join("->")} then hold` : `ramp ${rampStart} -> ${rampMax} x${rampGrowth}`})`
+          : `stream sent: ${text.length} chars (fixed ${fixedSize})`
+      );
+    }
+
+    function stop() {
+      clearCaptionTimers();
+      state.streamId += 1;
+      if (state.ws && state.connected) {
+        try { state.ws.close(); } catch (_) {}
+      }
+      if (state.audioCtx) {
+        try { state.audioCtx.close(); } catch (_) {}
+        state.audioCtx = null;
+        state.gainNode = null;
+      }
+      state.connected = false;
+      renderMetrics();
+      log("stopped");
+    }
+
+    $("url").value = wsDefault();
+    $("connectBtn").addEventListener("click", connect);
+    $("startBtn").addEventListener("click", streamText);
+    $("stopBtn").addEventListener("click", stop);
+    renderMetrics();
+  </script>
+</body>
+</html>

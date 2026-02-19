@@ -4,6 +4,5 @@ numpy
 websockets
 pydantic
 piper-tts
-whisperx
 kokoro-onnx
-matplotlib
+whisperx

@@ -1,0 +1,200 @@
+[
+  {
+    "run_id": "off-c1-r1-6f584f05",
+    "ttft_ms": 202.7639999287203,
+    "total_ms": 238.57674992177635,
+    "audio_bytes": 310464,
+    "spoken": "The product of three and seven is 3 times 7 equals 21.",
+    "server_ttft_ms": NaN,
+    "mode": "off",
+    "case": 1,
+    "input": "The product of three and seven is \\(3 \\times 7 = 21\\)."
+  },
+  {
+    "run_id": "off-c1-r2-cbfe1c4b",
+    "ttft_ms": 203.50354199763387,
+    "total_ms": 243.0066670058295,
+    "audio_bytes": 458640,
+    "spoken": "The product of three and seven is \\(3 \\times 7 = 21\\).",
+    "server_ttft_ms": 199.82,
+    "mode": "off",
+    "case": 1,
+    "input": "The product of three and seven is \\(3 \\times 7 = 21\\)."
+  },
+  {
+    "run_id": "off-c2-r1-2b2ca6bd",
+    "ttft_ms": 251.5681249788031,
+    "total_ms": 314.60066698491573,
+    "audio_bytes": 548956,
+    "spoken": "For a right triangle, the Pythagorean theorem states \\(a^2 + b^2 = c^2\\).",
+    "server_ttft_ms": 245.797,
+    "mode": "off",
+    "case": 2,
+    "input": "For a right triangle, the Pythagorean theorem states \\(a^2 + b^2 = c^2\\)."
+  },
+  {
+    "run_id": "off-c2-r2-269fbe77",
+    "ttft_ms": 307.602750021033,
+    "total_ms": 372.95087496750057,
+    "audio_bytes": 592704,
+    "spoken": "For a right triangle, the Pythagorean theorem states \\(a^2 + b^2 = c^2\\).",
+    "server_ttft_ms": 300.82,
+    "mode": "off",
+    "case": 2,
+    "input": "For a right triangle, the Pythagorean theorem states \\(a^2 + b^2 = c^2\\)."
+  },
+  {
+    "run_id": "off-c3-r1-89c8ab90",
+    "ttft_ms": 387.1438750065863,
+    "total_ms": 466.8888329761103,
+    "audio_bytes": 784628,
+    "spoken": "The derivative of \\(e^x\\) with respect to \\(x\\) is \\(\\frac{d}{dx} e^x = e^x\\).",
+    "server_ttft_ms": 379.027,
+    "mode": "off",
+    "case": 3,
+    "input": "The derivative of \\(e^x\\) with respect to \\(x\\) is \\(\\frac{d}{dx} e^x = e^x\\)."
+  },
+  {
+    "run_id": "off-c3-r2-8839a3be",
+    "ttft_ms": 374.7778329998255,
+    "total_ms": 455.3573749726638,
+    "audio_bytes": 797328,
+    "spoken": "The derivative of \\(e^x\\) with respect to \\(x\\) is \\(\\frac{d}{dx} e^x = e^x\\).",
+    "server_ttft_ms": 366.659,
+    "mode": "off",
+    "case": 3,
+    "input": "The derivative of \\(e^x\\) with respect to \\(x\\) is \\(\\frac{d}{dx} e^x = e^x\\)."
+  },
+  {
+    "run_id": "rule-c1-r1-1df85052",
+    "ttft_ms": 145.8530839299783,
+    "total_ms": 174.13508403114974,
+    "audio_bytes": 328810,
+    "spoken": "The product of three and seven is 3 times 7 equals 21.",
+    "server_ttft_ms": NaN,
+    "mode": "rule",
+    "case": 1,
+    "input": "The product of three and seven is \\(3 \\times 7 = 21\\)."
+  },
+  {
+    "run_id": "rule-c1-r2-d89b0070",
+    "ttft_ms": 148.99124996736646,
+    "total_ms": 176.73245805781335,
+    "audio_bytes": 323164,
+    "spoken": "The product of three and seven is 3 times 7 equals 21.",
+    "server_ttft_ms": 145.964,
+    "mode": "rule",
+    "case": 1,
+    "input": "The product of three and seven is \\(3 \\times 7 = 21\\)."
+  },
+  {
+    "run_id": "rule-c2-r1-d97dce55",
+    "ttft_ms": 180.3927079308778,
+    "total_ms": 230.75087496545166,
+    "audio_bytes": 445940,
+    "spoken": "For a right triangle, the Pythagorean theorem states a squared plus b squared equals c squared.",
+    "server_ttft_ms": 174.755,
+    "mode": "rule",
+    "case": 2,
+    "input": "For a right triangle, the Pythagorean theorem states \\(a^2 + b^2 = c^2\\)."
+  },
+  {
+    "run_id": "rule-c2-r2-12339199",
+    "ttft_ms": 236.44108301959932,
+    "total_ms": 283.79350004252046,
+    "audio_bytes": 455818,
+    "spoken": "For a right triangle, the Pythagorean theorem states a squared plus b squared equals c squared.",
+    "server_ttft_ms": 230.23,
+    "mode": "rule",
+    "case": 2,
+    "input": "For a right triangle, the Pythagorean theorem states \\(a^2 + b^2 = c^2\\)."
+  },
+  {
+    "run_id": "rule-c3-r1-5b0866ae",
+    "ttft_ms": 314.44008299149573,
+    "total_ms": 376.80820806417614,
+    "audio_bytes": 618106,
+    "spoken": "The derivative of e to the power of x with respect to x is d over d x e to the power of x equals e to the power of x.",
+    "server_ttft_ms": 306.044,
+    "mode": "rule",
+    "case": 3,
+    "input": "The derivative of \\(e^x\\) with respect to \\(x\\) is \\(\\frac{d}{dx} e^x = e^x\\)."
+  },
+  {
+    "run_id": "rule-c3-r2-2704a04b",
+    "ttft_ms": 299.1426249500364,
+    "total_ms": 361.69649998191744,
+    "audio_bytes": 596938,
+    "spoken": "The derivative of e to the power of x with respect to x is d over d x e to the power of x equals e to the power of x.",
+    "server_ttft_ms": 291.876,
+    "mode": "rule",
+    "case": 3,
+    "input": "The derivative of \\(e^x\\) with respect to \\(x\\) is \\(\\frac{d}{dx} e^x = e^x\\)."
+  },
+  {
+    "run_id": "sre-c1-r1-91843605",
+    "ttft_ms": 169.37216697260737,
+    "total_ms": 195.2774589881301,
+    "audio_bytes": 307642,
+    "spoken": "The product of three and seven is 3 times 7 equals 21.",
+    "server_ttft_ms": NaN,
+    "mode": "sre",
+    "case": 1,
+    "input": "The product of three and seven is \\(3 \\times 7 = 21\\)."
+  },
+  {
+    "run_id": "sre-c1-r2-45a11ee8",
+    "ttft_ms": 426.505959010683,
+    "total_ms": 454.1767919436097,
+    "audio_bytes": 320342,
+    "spoken": "The product of three and seven is 3 times 7 equals 21.",
+    "server_ttft_ms": 422.811,
+    "mode": "sre",
+    "case": 1,
+    "input": "The product of three and seven is \\(3 \\times 7 = 21\\)."
+  },
+  {
+    "run_id": "sre-c2-r1-f3f803c6",
+    "ttft_ms": 237.90891701355577,
+    "total_ms": 287.5797919696197,
+    "audio_bytes": 467108,
+    "spoken": "For a right triangle, the Pythagorean theorem states a squared plus b squared equals c squared.",
+    "server_ttft_ms": 232.426,
+    "mode": "sre",
+    "case": 2,
+    "input": "For a right triangle, the Pythagorean theorem states \\(a^2 + b^2 = c^2\\)."
+  },
+  {
+    "run_id": "sre-c2-r2-6a80ab48",
+    "ttft_ms": 251.35779101401567,
+    "total_ms": 302.45970806572586,
+    "audio_bytes": 467108,
+    "spoken": "For a right triangle, the Pythagorean theorem states a squared plus b squared equals c squared.",
+    "server_ttft_ms": 244.817,
+    "mode": "sre",
+    "case": 2,
+    "input": "For a right triangle, the Pythagorean theorem states \\(a^2 + b^2 = c^2\\)."
+  },
+  {
+    "run_id": "sre-c3-r1-d46434e6",
+    "ttft_ms": 379.1469580028206,
+    "total_ms": 452.2888329811394,
+    "audio_bytes": 739468,
+    "spoken": "The derivative of e to the x-th power with respect to x is d over d x e to the x-th power equals e to the x-th power.",
+    "server_ttft_ms": 369.839,
+    "mode": "sre",
+    "case": 3,
+    "input": "The derivative of \\(e^x\\) with respect to \\(x\\) is \\(\\frac{d}{dx} e^x = e^x\\)."
+  },
+  {
+    "run_id": "sre-c3-r2-e11ec5a0",
+    "ttft_ms": 372.87037493661046,
+    "total_ms": 449.4667910039425,
+    "audio_bytes": 739468,
+    "spoken": "The derivative of e to the x-th power with respect to x is d over d x e to the x-th power equals e to the x-th power.",
+    "server_ttft_ms": 364.071,
+    "mode": "sre",
+    "case": 3,
+    "input": "The derivative of \\(e^x\\) with respect to \\(x\\) is \\(\\frac{d}{dx} e^x = e^x\\)."
+  }
+]

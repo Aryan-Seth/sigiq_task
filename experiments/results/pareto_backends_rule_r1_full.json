@@ -1,0 +1,276 @@
+{
+  "config": {
+    "math_normalizer": "rule",
+    "chunk_mode": "ramp",
+    "chunk_size": 22,
+    "chunk_plan": [
+      4,
+      8,
+      32
+    ],
+    "delay": 0.01,
+    "runs": 1,
+    "variants": [
+      {
+        "backend": "piper",
+        "name": "en_US-lessac-low.onnx"
+      },
+      {
+        "backend": "piper",
+        "name": "en_US-lessac-medium.onnx"
+      },
+      {
+        "backend": "piper",
+        "name": "en_US-lessac-high.onnx"
+      },
+      {
+        "backend": "say",
+        "name": "Eddy (English (US))"
+      },
+      {
+        "backend": "kokoro",
+        "name": "af_sarah"
+      }
+    ],
+    "cases": [
+      "plain",
+      "math",
+      "math2"
+    ]
+  },
+  "summary": [
+    {
+      "backend": "piper",
+      "variant": "en_US-lessac-low.onnx",
+      "ttft_p50_ms": 70.19512495025992,
+      "wer_mean": 0.24349376114081997,
+      "cer_mean": 0.10908387378975615
+    },
+    {
+      "backend": "piper",
+      "variant": "en_US-lessac-medium.onnx",
+      "ttft_p50_ms": 69.81479097157717,
+      "wer_mean": 0.088698752228164,
+      "cer_mean": 0.04557078086489851
+    },
+    {
+      "backend": "piper",
+      "variant": "en_US-lessac-high.onnx",
+      "ttft_p50_ms": 302.81629192177206,
+      "wer_mean": 0.09939393939393938,
+      "cer_mean": 0.06249106249106249
+    },
+    {
+      "backend": "say",
+      "variant": "Eddy (English (US))",
+      "ttft_p50_ms": 413.9343750430271,
+      "wer_mean": 0.28263814616755795,
+      "cer_mean": 0.2117369470310647
+    },
+    {
+      "backend": "kokoro",
+      "variant": "af_sarah",
+      "ttft_p50_ms": 1436.1755419522524,
+      "wer_mean": 0.07515151515151515,
+      "cer_mean": 0.042971542971542966
+    }
+  ],
+  "pareto_frontier": [
+    {
+      "backend": "piper",
+      "variant": "en_US-lessac-medium.onnx",
+      "ttft_p50_ms": 69.81479097157717,
+      "wer_mean": 0.088698752228164,
+      "cer_mean": 0.04557078086489851
+    },
+    {
+      "backend": "kokoro",
+      "variant": "af_sarah",
+      "ttft_p50_ms": 1436.1755419522524,
+      "wer_mean": 0.07515151515151515,
+      "cer_mean": 0.042971542971542966
+    }
+  ],
+  "rows": [
+    {
+      "backend": "piper",
+      "variant": "en_US-lessac-low.onnx",
+      "case": "plain",
+      "run": 1,
+      "ttft_ms": 70.19512495025992,
+      "server_ttft_audio_out_ms": 50.693,
+      "wer": 0.29411764705882354,
+      "cer": 0.12605042016806722,
+      "hyp": "A practical, chaining text-to-speech benchmark should keep first-order O latency low while preserving clear PR, onensation.",
+      "ref": "A practical streaming text to speech benchmark should keep first audio latency low while preserving clear pronunciation."
+    },
+    {
+      "backend": "piper",
+      "variant": "en_US-lessac-low.onnx",
+      "case": "math",
+      "run": 1,
+      "ttft_ms": 59.17187500745058,
+      "server_ttft_audio_out_ms": 46.961,
+      "wer": 0.2,
+      "cer": 0.1111111111111111,
+      "hyp": "The product of 3 and 7 is 3 times 7 equals 21, and the Pythagorean T, the ORM is a squared plus B squared equals C squared.",
+      "ref": "The product of three and seven is 3 times 7 equals 21, and the Pythagorean theorem is a squared plus b squared equals c squared."
+    },
+    {
+      "backend": "piper",
+      "variant": "en_US-lessac-low.onnx",
+      "case": "math2",
+      "run": 1,
+      "ttft_ms": 81.33320894557983,
+      "server_ttft_audio_out_ms": 53.768,
+      "wer": 0.23636363636363636,
+      "cer": 0.09009009009009009,
+      "hyp": "The derivative, the value of x with respect to x is d over dx e to the power of x equals e to the power of x, and the quadratic formulas. x equals minus b plus or minus square root of b squared minus 4c over 2a.",
+      "ref": "The derivative of e to the power of x with respect to x is d over d x e to the power of x equals e to the power of x, and the quadratic formula is x equals minus b plus or minus square root of b squared minus 4 a c over 2 a."
+    },
+    {
+      "backend": "piper",
+      "variant": "en_US-lessac-medium.onnx",
+      "case": "plain",
+      "run": 1,
+      "ttft_ms": 69.81479097157717,
+      "server_ttft_audio_out_ms": 62.128,
+      "wer": 0.058823529411764705,
+      "cer": 0.01680672268907563,
+      "hyp": "A practical, dreaming text to speech benchmark should keep, first audio latency low while preserving clear pronunciation.",
+      "ref": "A practical streaming text to speech benchmark should keep first audio latency low while preserving clear pronunciation."
+    },
+    {
+      "backend": "piper",
+      "variant": "en_US-lessac-medium.onnx",
+      "case": "math",
+      "run": 1,
+      "ttft_ms": 57.06237500999123,
+      "server_ttft_audio_out_ms": 50.828,
+      "wer": 0.08,
+      "cer": 0.07936507936507936,
+      "hyp": "The product of 3 and 7 is 3 times 7 equals 21. And the Pythagorean theorem is a squared plus b squared equals c squared.",
+      "ref": "The product of three and seven is 3 times 7 equals 21, and the Pythagorean theorem is a squared plus b squared equals c squared."
+    },
+    {
+      "backend": "piper",
+      "variant": "en_US-lessac-medium.onnx",
+      "case": "math2",
+      "run": 1,
+      "ttft_ms": 80.6516669690609,
+      "server_ttft_audio_out_ms": 57.536,
+      "wer": 0.12727272727272726,
+      "cer": 0.04054054054054054,
+      "hyp": "The derivative of the power of x with respect to x is d over d x e to the power of x equals e to the power of x. And the quadratic formula is x equals minus b plus or minus square root of b squared minus 4c over 2a.",
+      "ref": "The derivative of e to the power of x with respect to x is d over d x e to the power of x equals e to the power of x, and the quadratic formula is x equals minus b plus or minus square root of b squared minus 4 a c over 2 a."
+    },
+    {
+      "backend": "piper",
+      "variant": "en_US-lessac-high.onnx",
+      "case": "plain",
+      "run": 1,
+      "ttft_ms": 281.8312500603497,
+      "server_ttft_audio_out_ms": 280.651,
+      "wer": 0.0,
+      "cer": 0.0,
+      "hyp": "A practical, streaming text-to-speech benchmark should keep first audio latency low, while preserving clear pronunciation.",
+      "ref": "A practical streaming text to speech benchmark should keep first audio latency low while preserving clear pronunciation."
+    },
+    {
+      "backend": "piper",
+      "variant": "en_US-lessac-high.onnx",
+      "case": "math",
+      "run": 1,
+      "ttft_ms": 302.81629192177206,
+      "server_ttft_audio_out_ms": 301.38,
+      "wer": 0.08,
+      "cer": 0.07936507936507936,
+      "hyp": "The product of 3 and 7 is 3 times 7 equals 21, and the Pythagorean theorem is a squared plus b squared equals c squared.",
+      "ref": "The product of three and seven is 3 times 7 equals 21, and the Pythagorean theorem is a squared plus b squared equals c squared."
+    },
+    {
+      "backend": "piper",
+      "variant": "en_US-lessac-high.onnx",
+      "case": "math2",
+      "run": 1,
+      "ttft_ms": 368.7558340607211,
+      "server_ttft_audio_out_ms": 367.07,
+      "wer": 0.21818181818181817,
+      "cer": 0.10810810810810811,
+      "hyp": "The derivative of x with respect to x is d over d x c to the power of x equals d to the power of x. And the quadratic formula is x equals minus b plus or minus square root of b squared minus 4c over 2a.",
+      "ref": "The derivative of e to the power of x with respect to x is d over d x e to the power of x equals e to the power of x, and the quadratic formula is x equals minus b plus or minus square root of b squared minus 4 a c over 2 a."
+    },
+    {
+      "backend": "say",
+      "variant": "Eddy (English (US))",
+      "case": "plain",
+      "run": 1,
+      "ttft_ms": 416.69099999126047,
+      "server_ttft_audio_out_ms": 415.462,
+      "wer": 0.058823529411764705,
+      "cer": 0.01680672268907563,
+      "hyp": "practical. Streaming text to speech benchmark should keep first audio latency low while preserving clear pronunciation.",
+      "ref": "A practical streaming text to speech benchmark should keep first audio latency low while preserving clear pronunciation."
+    },
+    {
+      "backend": "say",
+      "variant": "Eddy (English (US))",
+      "case": "math",
+      "run": 1,
+      "ttft_ms": 413.9343750430271,
+      "server_ttft_audio_out_ms": 412.869,
+      "wer": 0.28,
+      "cer": 0.19047619047619047,
+      "hyp": "product. of 3 and 7 is 3 times 7 equals 21 and a Pythagorean theorem is a square plus Speed square equals C squared.",
+      "ref": "The product of three and seven is 3 times 7 equals 21, and the Pythagorean theorem is a squared plus b squared equals c squared."
+    },
+    {
+      "backend": "say",
+      "variant": "Eddy (English (US))",
+      "case": "math2",
+      "run": 1,
+      "ttft_ms": 411.1636249581352,
+      "server_ttft_audio_out_ms": 409.826,
+      "wer": 0.509090909090909,
+      "cer": 0.42792792792792794,
+      "hyp": "the power of X with respect to X is d over d X e to the power of X e to the power of X and it would radical formulas X e to the power of X e to the power of X e to the power",
+      "ref": "The derivative of e to the power of x with respect to x is d over d x e to the power of x equals e to the power of x, and the quadratic formula is x equals minus b plus or minus square root of b squared minus 4 a c over 2 a."
+    },
+    {
+      "backend": "kokoro",
+      "variant": "af_sarah",
+      "case": "plain",
+      "run": 1,
+      "ttft_ms": 1436.1755419522524,
+      "server_ttft_audio_out_ms": 1435.136,
+      "wer": 0.0,
+      "cer": 0.0,
+      "hyp": "A practical, streaming text to Speech Benchmark should keep first audio latency low while preserving clear pronunciation.",
+      "ref": "A practical streaming text to speech benchmark should keep first audio latency low while preserving clear pronunciation."
+    },
+    {
+      "backend": "kokoro",
+      "variant": "af_sarah",
+      "case": "math",
+      "run": 1,
+      "ttft_ms": 1384.3147091101855,
+      "server_ttft_audio_out_ms": 1383.381,
+      "wer": 0.08,
+      "cer": 0.07936507936507936,
+      "hyp": "The product of 3 and 7 is 3 times 7 equals 21. And the Pythagorean theorem is a squared plus b squared equals c squared.",
+      "ref": "The product of three and seven is 3 times 7 equals 21, and the Pythagorean theorem is a squared plus b squared equals c squared."
+    },
+    {
+      "backend": "kokoro",
+      "variant": "af_sarah",
+      "case": "math2",
+      "run": 1,
+      "ttft_ms": 1871.4839580934495,
+      "server_ttft_audio_out_ms": 1870.461,
+      "wer": 0.14545454545454545,
+      "cer": 0.04954954954954955,
+      "hyp": "The derivative of the power of x with respect to x is d over dxe to the power of x equals e to the power of x. And the quadratic formula is x equals minus b plus or minus square root of b squared minus for a c over 2a.",
+      "ref": "The derivative of e to the power of x with respect to x is d over d x e to the power of x equals e to the power of x, and the quadratic formula is x equals minus b plus or minus square root of b squared minus 4 a c over 2 a."
+    }
+  ]
+}

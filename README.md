@@ -1,127 +1,73 @@
-# TTS WebSocket Scaffold
+# TTS WebSocket (Piper Medium + WhisperX + SRE)
 
-Minimal ElevenLabs-style TTS WebSocket clone scaffold with streaming audio + alignment.
+This repo is configured to run one stack:
+- TTS backend: `piper` (`en_US-lessac-medium`)
+- Aligner: `whisperx`
+- Math/LaTeX normalization: `sre` (`latex-to-speech` worker via Node)
 
-## Quickstart
+## 1) Prerequisites
+
+- Python 3.10+ recommended
+- Node.js 18+ (required for SRE worker)
+- `ffmpeg` available on PATH (recommended for WhisperX tooling)
+
+## 2) Setup
+
+From `tts_ws/`:
 
 ```bash
-cd tts_ws
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-
-# Run server
-uvicorn app.server:app --host 0.0.0.0 --port 8000
+npm install
 ```
 
-In another terminal:
+## 3) Required Piper Medium Files
 
-```bash
-cd tts_ws
-source .venv/bin/activate
-python test_client.py
-```
+Place these files in `tts_ws/`:
 
-The client writes `output.wav` (44.1 kHz, mono, 16-bit) in `tts_ws/`.
+- `en_US-lessac-medium.onnx`
+- `en_US-lessac-medium.onnx.json`
 
-To use real text:
+If they are already present, skip this step.
 
-```bash
-python test_client.py --text "Your text here."
-```
+## 4) Run Server (Piper + WhisperX + SRE)
 
-Or from a file:
-
-```bash
-python test_client.py --file /path/to/text.txt
-```
-
-Sample file:
-
-```bash
-python test_client.py --file sample_text.txt
-```
-
-Metrics (chars as tokens):
-
-```bash
-python test_client.py --file /path/to/text.txt --runs 50
-```
-
-Alignment evaluation (requires whisperx + torch):
-
-```bash
-# run server first
-python align_eval.py --file sample_text.txt --chunk-size 512 --delay 0
-```
-
-## Setup and running with `uv`
-
-`uv` gives fast, repeatable installs without touching global Python.
-
-```bash
-# install uv if missing
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-cd /Users/aryanseth/sigiq_takehome/tts_ws
-
-# create and populate a virtual env with project deps
-uv venv .venv
-source .venv/bin/activate
-uv pip install -r requirements.txt
-
-# run the server (dummy backend)
-uvicorn app.server:app --host 0.0.0.0 --port 8000
-
-# in another shell, same env, run the client
-python test_client.py --text "Hello streaming TTS"
-```
-
-### Piper backend
 ```bash
 export TTS_BACKEND=piper
-export PIPER_VOICE=/absolute/path/to/en_US-lessac-medium.onnx  # adjust to your voice file
-uvicorn app.server:app --host 0.0.0.0 --port 8000
-```
-
-### WhisperX alignment (optional, slower TTFT)
-Requires torch/torchaudio compatible with your platform/GPU:
-```bash
-# example CPU install; pick wheels from https://pytorch.org/get-started/locally/
-uv pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
-uv pip install whisperx
-
+export PIPER_VOICE="$PWD/en_US-lessac-medium.onnx"
+export PIPER_CONFIG="$PWD/en_US-lessac-medium.onnx.json"
 export ALIGNER=whisperx
-uvicorn app.server:app --host 0.0.0.0 --port 8000
+export TTS_MATH_NORMALIZER=sre
+export TTS_PROFILE=1
+
+python -m uvicorn app.server:app --host 127.0.0.1 --port 8000
 ```
 
-Then run the client as usual. For alignment evaluation:
-```bash
-python align_eval.py --file sample_text.txt --chunk-size 512 --delay 0
-```
+## 5) Test
 
-## Piper backend
-
-Install Piper and download a voice:
+In a new terminal (same env):
 
 ```bash
-pip install piper-tts
-python -m piper.download_voices en_US-lessac-medium
+source .venv/bin/activate
+python test_client.py --text "The product of three and seven is \(3 \times 7 = 21\)."
 ```
 
-Set the voice path and run the server:
+Open UI:
 
-```bash
-export TTS_BACKEND=piper
-export PIPER_VOICE=/path/to/en_US-lessac-medium.onnx
-uvicorn app.server:app --host 0.0.0.0 --port 8000
-```
+- `http://127.0.0.1:8000/`
 
-Optional tuning via env vars: `PIPER_CONFIG`, `PIPER_VOLUME`, `PIPER_LENGTH_SCALE`,
-`PIPER_NOISE_SCALE`, `PIPER_NOISE_W_SCALE`, `PIPER_NORMALIZE_AUDIO`, `PIPER_USE_CUDA`.
+WebSocket endpoint:
 
-## Notes
+- `ws://127.0.0.1:8000/tts`
 
-- WebSocket route: `ws://localhost:8000/tts`
-- Backend selection: set `TTS_BACKEND=dummy` (default)
-- Alignment: optional `ALIGNER=whisperx` (requires `whisperx` + torch and a downloaded align model)
+## Troubleshooting
+
+- `Backend init failed: piper-tts is not installed`
+  - Re-run `pip install -r requirements.txt`
+- `Aligner init failed`
+  - Confirm `whisperx` and torch installed in `.venv`
+- `Math normalizer init failed`
+  - Confirm `npm install` was run and `node` is on PATH
+- Very high TTFT
+  - WhisperX alignment is expensive; this setup prioritizes alignment quality over minimum latency.

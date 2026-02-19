@@ -14,6 +14,7 @@ class AlignmentPayload(BaseModel):
     chars: List[str]
     char_start_times_ms: List[int]
     char_durations_ms: List[int]
+    char_indices: List[int] = Field(default_factory=list)
 
 
 class OutputMessage(BaseModel):

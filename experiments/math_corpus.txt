@@ -1,0 +1,1 @@
+The product of three and seven is \(3 \times 7 = 21\). For a right triangle, the Pythagorean theorem states \(a^2 + b^2 = c^2\). The derivative of \(e^x\) with respect to \(x\) is \(\frac{d}{dx} e^x = e^x\). The area of a circle is \(A = \pi r^2\). The quadratic formula is \(x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}\).
