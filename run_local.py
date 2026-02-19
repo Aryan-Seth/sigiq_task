@@ -7,6 +7,7 @@ import sys
 import time
 from pathlib import Path
 from urllib.request import urlopen
+from urllib.request import urlretrieve
 
 
 def _healthcheck(host: str, port: int, timeout_s: float = 30.0) -> None:
@@ -52,6 +53,56 @@ def _ensure_math_stack(project_dir: Path) -> None:
     subprocess.run(["npm", "install"], cwd=str(project_dir), check=True)
 
 
+def _download_file(url: str, dst: Path) -> None:
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    tmp = dst.with_suffix(dst.suffix + ".part")
+    if tmp.exists():
+        tmp.unlink()
+    try:
+        print(f"Downloading {url} -> {dst}", flush=True)
+        urlretrieve(url, str(tmp))
+        tmp.replace(dst)
+    finally:
+        if tmp.exists():
+            tmp.unlink(missing_ok=True)
+
+
+def _ensure_piper_medium_files(project_dir: Path) -> tuple[Path, Path]:
+    voice = project_dir / "en_US-lessac-medium.onnx"
+    config = project_dir / "en_US-lessac-medium.onnx.json"
+    if voice.is_file() and config.is_file():
+        return voice, config
+
+    voice_url = (
+        "https://huggingface.co/rhasspy/piper-voices/resolve/main/"
+        "en/en_US/lessac/medium/en_US-lessac-medium.onnx"
+    )
+    config_url = (
+        "https://huggingface.co/rhasspy/piper-voices/resolve/main/"
+        "en/en_US/lessac/medium/en_US-lessac-medium.onnx.json"
+    )
+
+    errors: list[str] = []
+    if not voice.is_file():
+        try:
+            _download_file(voice_url, voice)
+        except Exception as exc:
+            errors.append(f"voice download failed: {exc}")
+    if not config.is_file():
+        try:
+            _download_file(config_url, config)
+        except Exception as exc:
+            errors.append(f"config download failed: {exc}")
+
+    if not voice.is_file() or not config.is_file():
+        raise RuntimeError(
+            "Piper medium files are missing and auto-download failed. "
+            f"voice_exists={voice.is_file()} config_exists={config.is_file()} "
+            f"errors={errors}"
+        )
+    return voice, config
+
+
 def _build_env(args: argparse.Namespace, project_dir: Path) -> dict[str, str]:
     env = os.environ.copy()
     env["TTS_BACKEND"] = args.backend
@@ -61,13 +112,7 @@ def _build_env(args: argparse.Namespace, project_dir: Path) -> dict[str, str]:
 
     if args.backend == "piper":
         _require_python_module("piper", "Install with `pip install piper-tts`.")
-        voice = project_dir / "en_US-lessac-medium.onnx"
-        config = project_dir / "en_US-lessac-medium.onnx.json"
-        if not voice.is_file() or not config.is_file():
-            raise FileNotFoundError(
-                f"Piper files missing: {voice} and/or {config}. "
-                "Place files in project root or use a different backend."
-            )
+        voice, config = _ensure_piper_medium_files(project_dir)
         env["PIPER_VOICE"] = str(voice)
         env["PIPER_CONFIG"] = str(config)
 

@@ -22,14 +22,14 @@ pip install -r requirements.txt
 npm install
 ```
 
-## 3) Required Piper Medium Files
+## 3) Piper Medium Files
 
-Place these files in `tts_ws/`:
+`run_local.py` auto-downloads these on first run if missing:
 
 - `en_US-lessac-medium.onnx`
 - `en_US-lessac-medium.onnx.json`
 
-If they are already present, skip this step.
+They are saved in `tts_ws/`.
 
 ## 4) Run Server (Piper + WhisperX + SRE)
 
